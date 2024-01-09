@@ -1,10 +1,10 @@
 package services
 
 import (
-	TodoModel "api/app/modules/todo/models"
-	TodoRepository "api/app/modules/todo/repositories"
-	TodoRequest "api/app/modules/todo/requests"
-	TodoResponse "api/app/modules/todo/responses"
+	TodoModel "api/internal/modules/todo/models"
+	TodoRepository "api/internal/modules/todo/repositories"
+	TodoRequest "api/internal/modules/todo/requests"
+	TodoResponse "api/internal/modules/todo/responses"
 	"errors"
 )
 

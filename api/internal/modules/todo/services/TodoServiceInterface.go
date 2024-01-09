@@ -1,8 +1,8 @@
 package services
 
 import (
-	TodoRequest "api/app/modules/todo/requests"
-	TodoResponse "api/app/modules/todo/responses"
+	TodoRequest "api/internal/modules/todo/requests"
+	TodoResponse "api/internal/modules/todo/responses"
 )
 
 type TodoServiceInterface interface {

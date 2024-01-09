@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	TodoRequest "api/app/modules/todo/requests"
-	TodoService "api/app/modules/todo/services"
+	TodoRequest "api/internal/modules/todo/requests"
+	TodoService "api/internal/modules/todo/services"
 	"net/http"
 	"strconv"
 

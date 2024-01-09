@@ -1,7 +1,7 @@
 package routes
 
 import (
-	TodosController "api/app/modules/todo/controllers"
+	TodosController "api/internal/modules/todo/controllers"
 
 	"github.com/gin-gonic/gin"
 )

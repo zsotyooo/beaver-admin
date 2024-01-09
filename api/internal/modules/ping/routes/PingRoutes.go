@@ -1,7 +1,7 @@
 package routes
 
 import (
-	PingController "api/app/modules/ping/controllers"
+	PingController "api/internal/modules/ping/controllers"
 
 	"github.com/gin-gonic/gin"
 )

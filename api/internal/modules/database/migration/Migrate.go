@@ -1,8 +1,8 @@
 package migration
 
 import (
-	todoModels "api/app/modules/todo/models"
-	userModels "api/app/modules/user/models"
+	todoModels "api/internal/modules/todo/models"
+	userModels "api/internal/modules/user/models"
 	"api/packages/database"
 	"fmt"
 	"log"

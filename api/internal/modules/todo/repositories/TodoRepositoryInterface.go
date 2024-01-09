@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	TodoModel "api/app/modules/todo/models"
+	TodoModel "api/internal/modules/todo/models"
 )
 
 type TodoRepositoryInterface interface {

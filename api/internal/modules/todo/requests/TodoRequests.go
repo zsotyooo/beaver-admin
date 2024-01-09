@@ -1,7 +1,7 @@
 package todo
 
 import (
-	TodoModel "api/app/modules/todo/models"
+	TodoModel "api/internal/modules/todo/models"
 
 	"github.com/jinzhu/copier"
 )

@@ -1,7 +1,7 @@
 package routing
 
 import (
-	"api/app/providers/routes"
+	"api/internal/providers/routes"
 )
 
 func Register() {

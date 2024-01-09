@@ -1,7 +1,7 @@
 package bootstrap
 
 import (
-	"api/app/modules/database/migration"
+	"api/internal/modules/database/migration"
 	"api/packages/config"
 	"api/packages/database"
 )

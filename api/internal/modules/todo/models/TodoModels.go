@@ -1,7 +1,7 @@
 package models
 
 import (
-	UserModels "api/app/modules/user/models"
+	UserModels "api/internal/modules/user/models"
 
 	"gorm.io/gorm"
 )

@@ -1,7 +1,7 @@
 package responses
 
 import (
-	TodoModel "api/app/modules/todo/models"
+	TodoModel "api/internal/modules/todo/models"
 	"time"
 
 	"github.com/thoas/go-funk"
