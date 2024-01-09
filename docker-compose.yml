@@ -1,0 +1,74 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16.1-alpine
+    platform: linux/amd64
+    restart: always
+    env_file: .env
+    ports:
+      - 5432:5432
+    volumes:
+      - db:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_DB: ${DATABASE_DBNAME}
+      POSTGRES_HOST_AUTH_METHOD: trust
+    networks:
+      - beaver
+  api:
+    platform: linux/amd64
+    restart: always
+    build:
+      dockerfile: ./api/Dockerfile
+      context: .
+      target: dev
+    env_file: .env
+    ports:
+      - 3001:3001
+    depends_on:
+      - db
+    links:
+      - db
+    volumes:
+      - ./api:/opt/api
+    environment:
+      SERVER_HOST: ${SERVER_HOST}
+      SERVER_PORT: ${SERVER_PORT}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_DBNAME: ${DATABASE_DBNAME}
+    networks:
+      - beaver
+
+  migrate: &basemigrate
+    profiles: ["tools"]
+    image: migrate/migrate
+    entrypoint: "migrate -database postgres://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@db/${DATABASE_DBNAME}?sslmode=disable -path /tmp/migrations"
+    command: up
+    depends_on:
+      - db
+    links:
+      - db
+    volumes:
+      - ./api/migrations:/tmp/migrations
+    networks:
+      - beaver
+
+  create-migration:
+    <<: *basemigrate
+    entrypoint: migrate create -dir /tmp/migrations -ext sql
+    command: ""
+
+volumes:
+  db:
+    driver: local
+
+networks:
+  beaver:
+    name: beaver
+    driver: bridge
