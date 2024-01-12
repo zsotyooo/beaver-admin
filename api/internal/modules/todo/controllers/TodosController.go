@@ -29,13 +29,13 @@ func (controller *TodosController) List(c *gin.Context) {
 }
 
 func (controller *TodosController) Create(c *gin.Context) {
-	var newTodo TodoRequest.TodoCreateRequest
+	var payload TodoRequest.TodoCreatePayload
 	// Call BindJSON to bind the received JSON to
-	if err := c.BindJSON(&newTodo); err != nil {
+	if err := c.BindJSON(&payload); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	todo, err := controller.todoService.CreateTodo(newTodo)
+	todo, err := controller.todoService.CreateTodo(payload)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -58,19 +58,19 @@ func (controller *TodosController) Read(c *gin.Context) {
 }
 
 func (controller *TodosController) Update(c *gin.Context) {
-	var newTodo TodoRequest.TodoUpdateRequest
+	var payload TodoRequest.TodoUpdatePayload
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := c.BindJSON(&newTodo); err != nil {
+	if err := c.BindJSON(&payload); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	updatedTodo, err := controller.todoService.UpdateTodo(uint(id), newTodo)
+	updatedTodo, err := controller.todoService.UpdateTodo(uint(id), payload)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

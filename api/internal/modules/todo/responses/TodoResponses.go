@@ -18,7 +18,7 @@ type TodosResponse struct {
 	Data []TodoResponse `json:"data"`
 }
 
-func ToTodo(todo TodoModel.Todo) TodoResponse {
+func ConvertModelToResponse(todo TodoModel.Todo) TodoResponse {
 	return TodoResponse{
 		ID:        todo.ID,
 		Title:     todo.Title,
@@ -27,10 +27,10 @@ func ToTodo(todo TodoModel.Todo) TodoResponse {
 	}
 }
 
-func ToTodos(todos []TodoModel.Todo) TodosResponse {
+func ConvertModelsToResponse(todos []TodoModel.Todo) TodosResponse {
 	return TodosResponse{
 		Data: funk.Map(todos, func(todo TodoModel.Todo) TodoResponse {
-			return ToTodo(todo)
+			return ConvertModelToResponse(todo)
 		}).([]TodoResponse),
 	}
 }

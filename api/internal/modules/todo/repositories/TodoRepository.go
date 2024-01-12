@@ -17,39 +17,27 @@ func New() *TodoRepository {
 	}
 }
 
-func (todoRepository *TodoRepository) List(limit int) ([]TodoModel.Todo, error) {
-	var todos []TodoModel.Todo
-
-	if err := todoRepository.DB.Limit(limit).Order("created_at DESC").Find(&todos).Error; err != nil {
-		return todos, err
-	}
-
-	return todos, nil
+func (todoRepository *TodoRepository) List(limit int) (todos []TodoModel.Todo, err error) {
+	err = todoRepository.DB.Limit(limit).Order("created_at DESC").Find(&todos).Error
+	return
 }
 
-func (TodoRepository *TodoRepository) Find(id uint) (TodoModel.Todo, error) {
-	var todo TodoModel.Todo
-
-	TodoRepository.DB.First(&todo, id)
-
-	return todo, nil
+func (TodoRepository *TodoRepository) Find(id uint) (todo TodoModel.Todo, err error) {
+	err = TodoRepository.DB.First(&todo, id).Error
+	return
 }
 
-func (todoRepository *TodoRepository) Create(todo TodoModel.Todo) (TodoModel.Todo, error) {
-	var newTodo TodoModel.Todo
-
-	todoRepository.DB.Create(&todo).Scan(&newTodo)
-
-	return newTodo, nil
+func (todoRepository *TodoRepository) Create(todo TodoModel.Todo) (newTodo TodoModel.Todo, err error) {
+	err = todoRepository.DB.Create(&todo).Scan(&newTodo).Error
+	return
 }
 
-func (todoRepository *TodoRepository) Update(todo, newTodo TodoModel.Todo) (TodoModel.Todo, error) {
-	todoRepository.DB.Model(&todo).Updates(&newTodo)
-
-	return todo, nil
+func (todoRepository *TodoRepository) Update(todo TodoModel.Todo, fields map[string]interface{}) (TodoModel.Todo, error) {
+	err := todoRepository.DB.Model(&todo).Updates(fields).Error
+	return todo, err
 }
 
 func (todoRepository *TodoRepository) Delete(id uint) error {
-	todoRepository.DB.Delete(&TodoModel.Todo{}, id)
-	return nil
+	err := todoRepository.DB.Delete(&TodoModel.Todo{}, id).Error
+	return err
 }

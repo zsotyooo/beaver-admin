@@ -6,6 +6,8 @@ import (
 	TodoRequest "api/internal/modules/todo/requests"
 	TodoResponse "api/internal/modules/todo/responses"
 	"errors"
+
+	"api/packages/converters"
 )
 
 type TodoService struct {
@@ -25,8 +27,7 @@ func (todoService *TodoService) GetTodos(limit int) (TodoResponse.TodosResponse,
 		return TodoResponse.TodosResponse{}, err
 	}
 
-	return TodoResponse.ToTodos(todos), nil
-
+	return TodoResponse.ConvertModelsToResponse(todos), nil
 }
 
 func (todoService *TodoService) FindTodo(id uint) (TodoResponse.TodoResponse, error) {
@@ -42,15 +43,15 @@ func (todoService *TodoService) FindTodo(id uint) (TodoResponse.TodoResponse, er
 		return response, errors.New("Todo not found!")
 	}
 
-	return TodoResponse.ToTodo(todo), nil
+	return TodoResponse.ConvertModelToResponse(todo), nil
 }
 
-func (todoService *TodoService) CreateTodo(request TodoRequest.TodoCreateRequest) (TodoResponse.TodoResponse, error) {
+func (todoService *TodoService) CreateTodo(payload TodoRequest.TodoCreatePayload) (TodoResponse.TodoResponse, error) {
 	var todo TodoModel.Todo
 	var response TodoResponse.TodoResponse
 
-	todo.Title = request.Title
-	todo.Done = request.Done
+	todo.Title = payload.Title
+	todo.Done = payload.Done
 
 	newTodo, err := todoService.todoRepository.Create(todo)
 
@@ -62,10 +63,10 @@ func (todoService *TodoService) CreateTodo(request TodoRequest.TodoCreateRequest
 		return response, errors.New("Error in creating the todo!")
 	}
 
-	return TodoResponse.ToTodo(newTodo), nil
+	return TodoResponse.ConvertModelToResponse(newTodo), nil
 }
 
-func (todoService *TodoService) UpdateTodo(id uint, request TodoRequest.TodoUpdateRequest) (TodoResponse.TodoResponse, error) {
+func (todoService *TodoService) UpdateTodo(id uint, payload TodoRequest.TodoUpdatePayload) (TodoResponse.TodoResponse, error) {
 	var response TodoResponse.TodoResponse
 	todo, err := todoService.todoRepository.Find(id)
 
@@ -77,14 +78,19 @@ func (todoService *TodoService) UpdateTodo(id uint, request TodoRequest.TodoUpda
 		return response, errors.New("Todo not found!")
 	}
 
-	newTodo := TodoRequest.UpdateRequestToTodo(request)
-	updatedTodo, err := todoService.todoRepository.Update(todo, newTodo)
+	fields, err := converters.StructToMap(payload)
 
 	if err != nil {
 		return response, err
 	}
 
-	return TodoResponse.ToTodo(updatedTodo), nil
+	updatedTodo, err := todoService.todoRepository.Update(todo, fields)
+
+	if err != nil {
+		return response, err
+	}
+
+	return TodoResponse.ConvertModelToResponse(updatedTodo), nil
 }
 
 func (todoService *TodoService) DeleteTodo(id uint) error {

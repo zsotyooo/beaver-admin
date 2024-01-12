@@ -1,23 +1,11 @@
 package todo
 
-import (
-	TodoModel "api/internal/modules/todo/models"
-
-	"github.com/jinzhu/copier"
-)
-
-type TodoCreateRequest struct {
-	Title string `json:"title"`
+type TodoCreatePayload struct {
+	Title string `json:"title" binding:"required"`
 	Done  bool   `json:"done"`
 }
 
-type TodoUpdateRequest struct {
-	Title string `json:"title"`
-	Done  bool   `json:"done"`
-}
-
-func UpdateRequestToTodo(request TodoUpdateRequest) TodoModel.Todo {
-	var todo TodoModel.Todo
-	copier.Copy(&todo, &request)
-	return todo
+type TodoUpdatePayload struct {
+	Title *string `json:"title,omitempty"`
+	Done  *bool   `json:"done,omitempty"`
 }

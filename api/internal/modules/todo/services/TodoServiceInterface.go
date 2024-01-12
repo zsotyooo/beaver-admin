@@ -8,7 +8,7 @@ import (
 type TodoServiceInterface interface {
 	GetTodos(limit int) (TodoResponse.TodosResponse, error)
 	FindTodo(id uint) (TodoResponse.TodoResponse, error)
-	CreateTodo(request TodoRequest.TodoCreateRequest) (TodoResponse.TodoResponse, error)
-	UpdateTodo(id uint, request TodoRequest.TodoUpdateRequest) (TodoResponse.TodoResponse, error)
+	CreateTodo(payload TodoRequest.TodoCreatePayload) (TodoResponse.TodoResponse, error)
+	UpdateTodo(id uint, payload TodoRequest.TodoUpdatePayload) (TodoResponse.TodoResponse, error)
 	DeleteTodo(id uint) error
 }
