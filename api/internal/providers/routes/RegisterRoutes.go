@@ -1,10 +1,10 @@
-package routes
+package routesprovider
 
 import (
-	authRoutes "api/internal/modules/auth/routes" // Import the missing package
-	pingRoutes "api/internal/modules/ping/routes"
-	swaggerRoutes "api/internal/modules/swagger/routes"
-	todoRoutes "api/internal/modules/todo/routes"
+	authRoutes "api/internal/auth/routes" // Import the missing package
+	pingRoutes "api/internal/ping/routes"
+	swaggerRoutes "api/internal/swagger/routes"
+	todoRoutes "api/internal/todo/routes"
 
 	"github.com/gin-gonic/gin"
 )

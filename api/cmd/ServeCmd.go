@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"api/packages/bootstrap"
+	"api/pkg/bootstrap"
 
 	"github.com/spf13/cobra"
 )
