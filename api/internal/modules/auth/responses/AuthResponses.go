@@ -4,8 +4,10 @@ import (
 	UserResponses "api/internal/modules/user/responses"
 )
 
+// LoginResponse represents the response for logging in
+// @name LoginResponse
 type LoginResponse struct {
-	Token string                     `json:"token"`
+	Token string                     `json:"token" example:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."`
 	User  UserResponses.UserResponse `json:"user"`
 }
 

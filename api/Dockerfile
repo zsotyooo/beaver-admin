@@ -4,6 +4,7 @@ RUN apk add --no-cache curl
 
 FROM base AS dev
 
+RUN go install github.com/swaggo/swag/cmd/swag@latest
 RUN go install github.com/cosmtrek/air@latest
 
 WORKDIR /opt/api

@@ -9,7 +9,7 @@ import (
 
 func Register(router *gin.Engine) {
 	authController := AuthController.New()
-	router.POST("/user/login", authController.Login)
-	router.POST("/user/logout", authController.Logout)
-	router.GET("/user/me", AuthMiddleware.Authorize(), authController.Me)
+	router.POST("/auth/login", authController.Login)
+	router.POST("/auth/logout", authController.Logout)
+	router.GET("/auth/me", AuthMiddleware.Authorize(), authController.Me)
 }

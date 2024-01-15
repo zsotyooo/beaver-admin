@@ -7,13 +7,17 @@ import (
 	"github.com/thoas/go-funk"
 )
 
+// TodoResponse represents a todo in the response
+// @name TodoResponse
 type TodoResponse struct {
-	ID        uint   `json:"id"`
-	Title     string `json:"title"`
-	Done      bool   `json:"done"`
-	CreatedAt string `json:"createdAt"`
+	ID        uint   `json:"id" example:"1"`
+	Title     string `json:"title" example:"Todo title"`
+	Done      bool   `json:"done" example:"true"`
+	CreatedAt string `json:"createdAt" example:"2024-01-09T11:59:57Z"`
 }
 
+// TodosResponse represents a list of todos in the response
+// @name TodosResponse
 type TodosResponse struct {
 	Data []TodoResponse `json:"data"`
 }

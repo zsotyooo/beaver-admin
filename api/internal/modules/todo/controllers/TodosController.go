@@ -19,6 +19,14 @@ func New() *TodosController {
 	}
 }
 
+// @Summary List todos
+// @Description get todos
+// @Tags todos
+// @Accept  json
+// @Produce  json
+// @Param limit query int false "limit"
+// @Success 200 {object} responses.TodosResponse
+// @Router /todos [get]
 func (controller *TodosController) List(c *gin.Context) {
 	todos, err := controller.todoService.GetTodos(10)
 	if err != nil {
@@ -28,6 +36,14 @@ func (controller *TodosController) List(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, todos)
 }
 
+// @Summary Create a new todo
+// @Description create a new todo
+// @Tags todos
+// @Accept  json
+// @Produce  json
+// @Param todo body requests.TodoCreatePayload true "todo payload"
+// @Success 200 {object} responses.TodoResponse
+// @Router /todos [post]
 func (controller *TodosController) Create(c *gin.Context) {
 	var payload TodoRequest.TodoCreatePayload
 	// Call BindJSON to bind the received JSON to
@@ -40,9 +56,17 @@ func (controller *TodosController) Create(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.IndentedJSON(http.StatusOK, todo)
+	c.IndentedJSON(http.StatusCreated, todo)
 }
 
+// @Summary Create a new todo
+// @Description create a new todo
+// @Tags todos
+// @Accept  json
+// @Produce  json
+// @Param todo body requests.TodoCreatePayload true "todo payload"
+// @Success 200 {object} responses.TodoResponse
+// @Router /todos [post]
 func (controller *TodosController) Read(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -57,6 +81,15 @@ func (controller *TodosController) Read(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, todo)
 }
 
+// @Summary Update a todo
+// @Description update a todo
+// @Tags todos
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Todo ID"
+// @Param todo body requests.TodoUpdatePayload true "todo payload"
+// @Success 200 {object} responses.TodoResponse
+// @Router /todos/{id} [patch]
 func (controller *TodosController) Update(c *gin.Context) {
 	var payload TodoRequest.TodoUpdatePayload
 	id, err := strconv.Atoi(c.Param("id"))
@@ -78,6 +111,14 @@ func (controller *TodosController) Update(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, updatedTodo)
 }
 
+// @Summary Delete a todo
+// @Description delete a todo
+// @Tags todos
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Todo ID"
+// @Success 204 {object} nil
+// @Router /todos/{id} [delete]
 func (controller *TodosController) Delete(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -87,5 +128,5 @@ func (controller *TodosController) Delete(c *gin.Context) {
 
 	controller.todoService.DeleteTodo(uint(id))
 
-	c.IndentedJSON(http.StatusOK, gin.H{"message": "Todo deleted successfully!"})
+	c.IndentedJSON(http.StatusNoContent, gin.H{"message": "Todo deleted successfully!"})
 }

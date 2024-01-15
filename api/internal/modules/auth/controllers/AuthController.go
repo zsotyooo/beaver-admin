@@ -29,6 +29,15 @@ func New() *AuthController {
 	}
 }
 
+// @Summary Log in via google oauth token
+// @Description log in with token
+// @Tags auth
+// @Accept  json
+// @Produce  json
+// @Param payload body requests.LoginPayload true "Login payload"
+// @Success 200 {object} responses.LoginResponse
+// @Failure 400 {object} responses.ErrorResponse
+// @Router /auth/login [post]
 func (controller *AuthController) Login(context *gin.Context) {
 	var payload AuthRequests.LoginPayload
 	var user UserResponses.UserResponse
@@ -76,6 +85,14 @@ func (controller *AuthController) Login(context *gin.Context) {
 	context.IndentedJSON(http.StatusOK, AuthResponses.CreateLoginResponse(token, user))
 }
 
+// @Summary Get current user
+// @Description get current user
+// @Tags auth
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} responses.UserResponse
+// @Failure 204 {object} responses.ErrorResponse
+// @Router /auth/me [get]
 func (controller *AuthController) Me(context *gin.Context) {
 	email, emailExists := context.Get("email")
 
@@ -98,6 +115,13 @@ func (controller *AuthController) Me(context *gin.Context) {
 	context.IndentedJSON(http.StatusOK, user)
 }
 
+// @Summary Log out
+// @Description log out
+// @Tags auth
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} responses.SuccessResponse
+// @Router /auth/logout [post]
 func (controller *AuthController) Logout(context *gin.Context) {
 	context.SetCookie("authToken", "", -1, "/", "", false, true)
 	context.IndentedJSON(http.StatusOK, gin.H{"message": "Logout successful!"})

@@ -1,0 +1,255 @@
+basePath: /api
+definitions:
+  requests.LoginPayload:
+    properties:
+      token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+    required:
+    - token
+    type: object
+  requests.TodoCreatePayload:
+    properties:
+      done:
+        example: false
+        type: boolean
+      title:
+        example: New todo title
+        type: string
+    required:
+    - title
+    type: object
+  requests.TodoUpdatePayload:
+    properties:
+      done:
+        example: false
+        type: boolean
+      title:
+        example: New title
+        type: string
+    type: object
+  responses.ErrorResponse:
+    properties:
+      error:
+        example: Error
+        type: string
+    type: object
+  responses.LoginResponse:
+    properties:
+      token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+      user:
+        $ref: '#/definitions/responses.UserResponse'
+    type: object
+  responses.SuccessResponse:
+    properties:
+      message:
+        example: Success
+        type: string
+    type: object
+  responses.TodoResponse:
+    properties:
+      createdAt:
+        example: "2024-01-09T11:59:57Z"
+        type: string
+      done:
+        example: true
+        type: boolean
+      id:
+        example: 1
+        type: integer
+      title:
+        example: Todo title
+        type: string
+    type: object
+  responses.TodosResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/responses.TodoResponse'
+        type: array
+    type: object
+  responses.UserResponse:
+    properties:
+      createdAt:
+        example: "2024-01-09T11:59:57Z"
+        type: string
+      email:
+        example: john.doe@gmail.com
+        type: string
+      id:
+        example: 1
+        type: integer
+      name:
+        example: John Doe
+        type: string
+      role:
+        enum:
+        - user
+        - moderator
+        - admin
+        example: user
+        type: string
+    type: object
+host: localhost:3001
+info:
+  contact: {}
+  description: Beaver Admin API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Beaver Admin API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: log in with token
+      parameters:
+      - description: Login payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/requests.LoginPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Log in via google oauth token
+      tags:
+      - auth
+  /auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: log out
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessResponse'
+      summary: Log out
+      tags:
+      - auth
+  /auth/me:
+    get:
+      consumes:
+      - application/json
+      description: get current user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.UserResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Get current user
+      tags:
+      - auth
+  /todos:
+    get:
+      consumes:
+      - application/json
+      description: get todos
+      parameters:
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.TodosResponse'
+      summary: List todos
+      tags:
+      - todos
+    post:
+      consumes:
+      - application/json
+      description: create a new todo
+      parameters:
+      - description: todo payload
+        in: body
+        name: todo
+        required: true
+        schema:
+          $ref: '#/definitions/requests.TodoCreatePayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.TodoResponse'
+      summary: Create a new todo
+      tags:
+      - todos
+  /todos/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete a todo
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      summary: Delete a todo
+      tags:
+      - todos
+    patch:
+      consumes:
+      - application/json
+      description: update a todo
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: todo payload
+        in: body
+        name: todo
+        required: true
+        schema:
+          $ref: '#/definitions/requests.TodoUpdatePayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.TodoResponse'
+      summary: Update a todo
+      tags:
+      - todos
+swagger: "2.0"
