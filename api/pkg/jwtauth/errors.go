@@ -1,6 +1,9 @@
 package jwtauth
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 var (
 	ErrorCreatingToken         = errors.New("Couldn't create token")
@@ -9,3 +12,7 @@ var (
 	ErrorInvalidTokenSignature = errors.New("Invalid token signature")
 	ErrorInvalidClaims         = errors.New("Couldn't parse claims")
 )
+
+func Error(err error) error {
+	return fmt.Errorf("Error in jwt auth: %w", err)
+}

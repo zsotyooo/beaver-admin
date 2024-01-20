@@ -1,16 +1,23 @@
 package routes
 
 import (
-	TodosController "api/internal/todo/controllers"
+	authMiddlewares "api/internal/auth/middleware"
+	todoControllers "api/internal/todo/controller"
 
 	"github.com/gin-gonic/gin"
 )
 
-func Register(router *gin.Engine) {
-	todosController := TodosController.New()
-	router.GET("/todos", todosController.List)
-	router.GET("/todos/:id", todosController.Read)
-	router.POST("/todos", todosController.Create)
-	router.PATCH("/todos/:id", todosController.Update)
-	router.DELETE("/todos/:id", todosController.Delete)
+func RegisterRoutes(router *gin.Engine) {
+	todoController := todoControllers.NewTodoApiController()
+	authMiddleware := authMiddlewares.NewAuthorizeMiddleware()
+	group := router.Group("/todos")
+	{
+		group.Use(authMiddleware.Authorize())
+		group.GET("", authMiddleware.EnsureLoggedIn(), todoController.List)
+		group.GET("/:id", authMiddleware.EnsureLoggedIn(), todoController.Read)
+		group.POST("", authMiddleware.EnsureLoggedIn(), todoController.Create)
+		group.PATCH("/:id", authMiddleware.EnsureLoggedIn(), todoController.Update)
+		group.DELETE("/:id", authMiddleware.EnsureLoggedIn(), todoController.Delete)
+	}
+
 }

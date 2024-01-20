@@ -39,7 +39,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/requests.LoginPayload"
+                            "$ref": "#/definitions/auth.LoginPayload"
                         }
                     }
                 ],
@@ -47,13 +47,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/responses.LoginResponse"
+                            "$ref": "#/definitions/auth.LoginResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/responses.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -76,7 +76,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/responses.SuccessResponse"
+                            "$ref": "#/definitions/api.SuccessResponse"
                         }
                     }
                 }
@@ -99,19 +99,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/responses.UserResponse"
+                            "$ref": "#/definitions/user.UserResponse"
                         }
                     },
-                    "403": {
-                        "description": "Forbidden",
+                    "204": {
+                        "description": "No Content",
                         "schema": {
-                            "$ref": "#/definitions/responses.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/responses.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -132,9 +126,15 @@ const docTemplate = `{
                 "summary": "List todos",
                 "parameters": [
                     {
+                        "type": "boolean",
+                        "example": false,
+                        "name": "done",
+                        "in": "query"
+                    },
+                    {
                         "type": "integer",
-                        "description": "limit",
-                        "name": "limit",
+                        "example": 1,
+                        "name": "user_id",
                         "in": "query"
                     }
                 ],
@@ -142,7 +142,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/responses.TodosResponse"
+                            "$ref": "#/definitions/todo.TodosResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -166,7 +184,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/requests.TodoCreatePayload"
+                            "$ref": "#/definitions/todo.TodoCreatePayload"
                         }
                     }
                 ],
@@ -174,13 +192,55 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/responses.TodoResponse"
+                            "$ref": "#/definitions/todo.TodoResponse"
                         }
                     }
                 }
             }
         },
         "/todos/{id}": {
+            "get": {
+                "description": "get a todo by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "todos"
+                ],
+                "summary": "Get a todo",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Todo ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/todo.TodoResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            },
             "delete": {
                 "description": "delete a todo",
                 "consumes": [
@@ -234,7 +294,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/requests.TodoUpdatePayload"
+                            "$ref": "#/definitions/todo.TodoUpdatePayload"
                         }
                     }
                 ],
@@ -242,7 +302,92 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/responses.TodoResponse"
+                            "$ref": "#/definitions/todo.TodoResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "description": "get users",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "List users",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.UsersResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}": {
+            "get": {
+                "description": "get a user by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get a user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.UserResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -250,7 +395,25 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "requests.LoginPayload": {
+        "api.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Error"
+                }
+            }
+        },
+        "api.SuccessResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Success"
+                }
+            }
+        },
+        "auth.LoginPayload": {
             "type": "object",
             "required": [
                 "token"
@@ -262,10 +425,23 @@ const docTemplate = `{
                 }
             }
         },
-        "requests.TodoCreatePayload": {
+        "auth.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                },
+                "user": {
+                    "$ref": "#/definitions/user.UserResponse"
+                }
+            }
+        },
+        "todo.TodoCreatePayload": {
             "type": "object",
             "required": [
-                "title"
+                "title",
+                "user_id"
             ],
             "properties": {
                 "done": {
@@ -275,53 +451,14 @@ const docTemplate = `{
                 "title": {
                     "type": "string",
                     "example": "New todo title"
-                }
-            }
-        },
-        "requests.TodoUpdatePayload": {
-            "type": "object",
-            "properties": {
-                "done": {
-                    "type": "boolean",
-                    "example": false
                 },
-                "title": {
-                    "type": "string",
-                    "example": "New title"
+                "user_id": {
+                    "type": "integer",
+                    "example": 1
                 }
             }
         },
-        "responses.ErrorResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string",
-                    "example": "Error"
-                }
-            }
-        },
-        "responses.LoginResponse": {
-            "type": "object",
-            "properties": {
-                "token": {
-                    "type": "string",
-                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                },
-                "user": {
-                    "$ref": "#/definitions/responses.UserResponse"
-                }
-            }
-        },
-        "responses.SuccessResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string",
-                    "example": "Success"
-                }
-            }
-        },
-        "responses.TodoResponse": {
+        "todo.TodoResponse": {
             "type": "object",
             "properties": {
                 "createdAt": {
@@ -339,21 +476,41 @@ const docTemplate = `{
                 "title": {
                     "type": "string",
                     "example": "Todo title"
+                },
+                "user": {
+                    "$ref": "#/definitions/user.UserResponse"
                 }
             }
         },
-        "responses.TodosResponse": {
+        "todo.TodoUpdatePayload": {
+            "type": "object",
+            "properties": {
+                "done": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "title": {
+                    "type": "string",
+                    "example": "New title"
+                }
+            }
+        },
+        "todo.TodosResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/responses.TodoResponse"
+                        "$ref": "#/definitions/todo.TodoResponse"
                     }
+                },
+                "total": {
+                    "type": "integer",
+                    "example": 100
                 }
             }
         },
-        "responses.UserResponse": {
+        "user.UserResponse": {
             "type": "object",
             "properties": {
                 "createdAt": {
@@ -380,6 +537,21 @@ const docTemplate = `{
                         "admin"
                     ],
                     "example": "user"
+                }
+            }
+        },
+        "user.UsersResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user.UserResponse"
+                    }
+                },
+                "total": {
+                    "type": "integer",
+                    "example": 100
                 }
             }
         }

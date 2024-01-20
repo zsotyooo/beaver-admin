@@ -18,7 +18,7 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func New() *JwtAuth {
+func NewJwtAuth() *JwtAuth {
 	return &JwtAuth{
 		SecretKey:         os.Getenv("JWT_SECRET"),
 		Issuer:            "BeaverAdmin",
@@ -37,7 +37,7 @@ func (jwtAuth *JwtAuth) GenerateToken(email string) (signedToken string, err err
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	signedToken, err = token.SignedString([]byte(jwtAuth.SecretKey))
 	if err != nil {
-		err = ErrorCreatingToken
+		err = Error(ErrorCreatingToken)
 		signedToken = ""
 	}
 	return
@@ -48,6 +48,9 @@ func (jwtAuth *JwtAuth) ValidateToken(signedToken string) (claims *Claims, err e
 
 	if claims.ExpiresAt.Time.Unix() < time.Now().Local().Unix() {
 		err = ErrorTokenExpired
+	}
+	if err != nil {
+		err = Error(err)
 		claims = nil
 		return
 	}
@@ -64,18 +67,18 @@ func (jwtAuth *JwtAuth) parseTokenClaims(signedToken string) (claims *Claims, er
 	)
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
-			err = ErrorInvalidTokenSignature
+			err = Error(ErrorInvalidTokenSignature)
 		}
-		err = ErrorInvalidToken
+		err = Error(ErrorInvalidToken)
 		return
 	}
 	if !token.Valid {
-		err = ErrorInvalidToken
+		err = Error(ErrorInvalidToken)
 		return
 	}
 	claims, ok := token.Claims.(*Claims)
 	if !ok {
-		err = ErrorInvalidClaims
+		err = Error(ErrorInvalidClaims)
 	}
 	return
 }

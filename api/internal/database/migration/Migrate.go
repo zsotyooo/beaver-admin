@@ -1,9 +1,8 @@
 package migration
 
 import (
-	holidayModels "api/internal/holiday/models"
-	todoModels "api/internal/todo/models"
-	userModels "api/internal/user/models"
+	"api/internal/todo"
+	"api/internal/user"
 	"api/pkg/database"
 	"fmt"
 	"log"
@@ -12,7 +11,7 @@ import (
 func Migrate() {
 	db := database.Connection()
 
-	err := db.AutoMigrate(&userModels.User{}, &todoModels.Todo{}, &holidayModels.Holiday{})
+	err := db.AutoMigrate(&user.User{}, &todo.Todo{})
 
 	if err != nil {
 		log.Fatal("Can't migrate!")

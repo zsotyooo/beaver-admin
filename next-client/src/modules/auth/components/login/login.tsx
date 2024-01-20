@@ -29,6 +29,12 @@ export default function Login() {
     });
   }, []);
 
+  const handleLogout = useCallback(() => {
+    apiClient.get('/auth/logout').then((response) => {
+      console.log(response.data);
+    });
+  }, []);
+
   return (
     <div>
       <div className={'p-8'}>
@@ -42,6 +48,7 @@ export default function Login() {
       </div>
       <div className={'p-8'}>
         <Button onClick={handleMeCleck}>Me</Button>
+        <Button onClick={handleLogout}>Logout</Button>
       </div>
     </div>
   );

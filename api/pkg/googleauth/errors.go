@@ -1,10 +1,17 @@
 package googleauth
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 var (
-	ErrorValidatingToken = errors.New("Google oauth: Error validating token")
-	ErrorEmailNotFound   = errors.New("Google oauth: Email not found")
-	ErrorNameNotFound    = errors.New("Google oauth: Name not found")
-	ErrorDecodingClaims  = errors.New("Google oauth: Error decoding claims")
+	ErrorValidatingToken      = errors.New("Error validating token")
+	ErrorEmailNotFoundInToken = errors.New("Email not found in claims")
+	ErrorNameNotFoundInToken  = errors.New("Name not found in claims")
+	ErrorDecodingClaims       = errors.New("Error decoding claims")
 )
+
+func Error(err error) error {
+	return fmt.Errorf("Error in google auth: %w", err)
+}
