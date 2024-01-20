@@ -89,12 +89,12 @@ func (userService *UserService) GetUserByEmail(email string) (user User, err err
 	return
 }
 
-func (userService *UserService) CreateUser(payload UserCreatePayload) (newUser User, err error) {
+func (userService *UserService) CreateUser(data UserFullData) (newUser User, err error) {
 	var user User
 
-	user.Email = payload.Email
-	user.Name = payload.Name
-	user.Role = UserRole(payload.Role)
+	user.Email = data.Email
+	user.Name = data.Name
+	user.Role = UserRole(data.Role)
 
 	newUser, err = userService.userRepository.Create(user)
 
@@ -110,7 +110,7 @@ func (userService *UserService) CreateUser(payload UserCreatePayload) (newUser U
 	return
 }
 
-func (userService *UserService) UpdateUser(id uint, payload UserUpdatePayload) (updatedUser User, err error) {
+func (userService *UserService) UpdateUser(id uint, data UserUpdatableData) (updatedUser User, err error) {
 	user, err := userService.userRepository.FindById(id)
 
 	if err != nil {
@@ -126,7 +126,7 @@ func (userService *UserService) UpdateUser(id uint, payload UserUpdatePayload) (
 		return
 	}
 
-	fields, err := converters.StructToMap(payload)
+	fields, err := converters.StructToMap(data)
 
 	if err != nil {
 		err = Error(err)
@@ -188,7 +188,7 @@ func (userService *UserService) MakeSureUserExists(email, name string) (user Use
 		user, err = userService.GetUserByEmail(email)
 	} else {
 		userRole, _ := UserRoleUser.Value()
-		user, err = userService.CreateUser(UserCreatePayload{
+		user, err = userService.CreateUser(UserFullData{
 			Email: email,
 			Name:  name,
 			Role:  userRole.(string),

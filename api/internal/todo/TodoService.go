@@ -66,12 +66,12 @@ func (todoService *TodoService) FindTodo(id uint) (todo Todo, err error) {
 	return
 }
 
-func (todoService *TodoService) CreateTodo(payload TodoCreatePayload) (newTodo Todo, err error) {
+func (todoService *TodoService) CreateTodo(data TodoFullData) (newTodo Todo, err error) {
 	var todo Todo
 
-	todo.UserID = payload.UserID
-	todo.Title = payload.Title
-	todo.Done = payload.Done
+	todo.UserID = data.UserID
+	todo.Title = data.Title
+	todo.Done = data.Done
 
 	newTodo, err = todoService.todoRepository.Create(todo)
 
@@ -86,14 +86,14 @@ func (todoService *TodoService) CreateTodo(payload TodoCreatePayload) (newTodo T
 	return
 }
 
-func (todoService *TodoService) UpdateTodo(id uint, payload TodoUpdatePayload) (updatedTodo Todo, err error) {
+func (todoService *TodoService) UpdateTodo(id uint, data TodoUpdatableData) (updatedTodo Todo, err error) {
 	todo, err := todoService.FindTodo(id)
 
 	if err != nil {
 		return
 	}
 
-	fields, err := converters.StructToMap(payload)
+	fields, err := converters.StructToMap(data)
 
 	if err != nil {
 		return

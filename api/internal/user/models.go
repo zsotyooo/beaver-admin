@@ -42,3 +42,15 @@ func (u *User) HasRole(roles []UserRole) bool {
 func (u *User) IsSuperUser() bool {
 	return u.HasRole([]UserRole{UserRoleAdmin, UserRoleModerator})
 }
+
+type UserFullData struct {
+	Name  string
+	Email string
+	Role  string
+}
+
+type UserUpdatableData struct {
+	Name  *string
+	Email *string
+	Role  *UserRole
+}

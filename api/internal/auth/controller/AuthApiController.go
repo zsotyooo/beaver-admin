@@ -4,6 +4,7 @@ import (
 	"api/internal/api"
 	"api/internal/auth"
 	"api/internal/user"
+	userControllers "api/internal/user/controller"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -26,12 +27,12 @@ func NewAuthApiController() *AuthApiController {
 // @Tags auth
 // @Accept  json
 // @Produce  json
-// @Param payload body auth.LoginPayload true "Login payload"
-// @Success 200 {object} auth.LoginResponse
+// @Param payload body LoginPayload true "Login payload"
+// @Success 200 {object} LoginResponse
 // @Failure 400 {object} api.ErrorResponse
 // @Router /auth/login [post]
 func (controller *AuthApiController) Login(context *gin.Context) {
-	var payload auth.LoginPayload
+	var payload LoginPayload
 
 	if err := context.BindJSON(&payload); err != nil {
 		err = auth.ErrorBadLoginCredentials
@@ -50,7 +51,10 @@ func (controller *AuthApiController) Login(context *gin.Context) {
 	auth.SetAuthUserInContext(authUser, context)
 	context.SetCookie("authToken", token, 3600, "/", "", false, true)
 
-	context.IndentedJSON(http.StatusOK, auth.LoginResponse{Token: token, User: user.ConvertModelToResponse(authUser)})
+	context.IndentedJSON(http.StatusOK, LoginResponse{
+		Token: token,
+		User:  userControllers.ConvertUserModelToResponse(authUser),
+	})
 }
 
 // @Summary Get current user
@@ -58,13 +62,13 @@ func (controller *AuthApiController) Login(context *gin.Context) {
 // @Tags auth
 // @Accept  json
 // @Produce  json
-// @Success 200 {object} user.UserResponse
+// @Success 200 {object} userControllers.UserResponse
 // @Failure 204 {object} api.ErrorResponse
 // @Router /auth/me [get]
 func (controller *AuthApiController) Me(context *gin.Context) {
 	authUser, _ := auth.GetAuthUserFromContext(context)
 
-	context.IndentedJSON(http.StatusOK, user.ConvertModelToResponse(authUser))
+	context.IndentedJSON(http.StatusOK, userControllers.ConvertUserModelToResponse(authUser))
 }
 
 // @Summary Log out

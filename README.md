@@ -1,2 +1,3 @@
-# go-todo
-Go TODO app
+# Beaver admin
+
+Beaver admin.

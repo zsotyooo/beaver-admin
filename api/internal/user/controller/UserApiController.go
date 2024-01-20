@@ -24,7 +24,7 @@ func NewUserApiController() *UserApiController {
 // @Tags users
 // @Accept  json
 // @Produce  json
-// @Success 200 {object} user.UsersResponse
+// @Success 200 {object} UsersResponse
 // @Failure 400 {object} api.ErrorResponse "Invalid request"
 // @Failure 401 {object} api.ErrorResponse "Unauthorized"
 // @Failure 500 {object} api.ErrorResponse "Internal server error"
@@ -35,7 +35,7 @@ func (controller *UserApiController) List(context *gin.Context) {
 		context.IndentedJSON(http.StatusInternalServerError, api.NewErrorResponse(err))
 		return
 	}
-	context.IndentedJSON(http.StatusOK, user.ConvertModelsToResponse(users, total))
+	context.IndentedJSON(http.StatusOK, ConvertUserModelsToResponse(users, total))
 }
 
 // @Summary Get a user
@@ -44,7 +44,7 @@ func (controller *UserApiController) List(context *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param id path int true "User ID"
-// @Success 200 {object} user.UserResponse
+// @Success 200 {object} UserResponse
 // @Failure 403 {object} api.ErrorResponse
 // @Failure 500 {object} api.ErrorResponse
 // @Router /users/{id} [get]
@@ -60,5 +60,5 @@ func (controller *UserApiController) Read(context *gin.Context) {
 		return
 	}
 
-	context.IndentedJSON(http.StatusOK, user.ConvertModelToResponse(userItem))
+	context.IndentedJSON(http.StatusOK, ConvertUserModelToResponse(userItem))
 }

@@ -1,4 +1,4 @@
-package todo
+package controllers
 
 import (
 	"api/internal/api"
@@ -25,30 +25,30 @@ func NewTodoApiController() *TodoApiController {
 // @Tags todos
 // @Accept  json
 // @Produce  json
-// @Param   filter query todo.TodoListFilter false "Filter the todo list"
-// @Success 200 {object} todo.TodosResponse
+// @Param   filter query TodoListFilterParams false "Filter the todo list"
+// @Success 200 {object} TodosResponse
 // @Failure 400 {object} api.ErrorResponse "Invalid request"
 // @Failure 401 {object} api.ErrorResponse "Unauthorized"
 // @Failure 500 {object} api.ErrorResponse "Internal server error"
 // @Router /todos [get]
 func (controller *TodoApiController) List(context *gin.Context) {
-	var filter = todo.TodoListFilter{}
-	context.ShouldBindQuery(&filter)
+	var filterParams = TodoListFilterParams{}
+	context.ShouldBindQuery(&filterParams)
 
 	authUser, _ := auth.GetAuthUserFromContext(context)
-	err := filter.Validate(authUser)
+	err := filterParams.Validate(authUser)
 
 	if err != nil {
 		context.IndentedJSON(http.StatusForbidden, api.NewErrorResponse(err))
 		return
 	}
 
-	todos, total, err := controller.todoService.GetTodos(filter, 10)
+	todos, total, err := controller.todoService.GetTodos(todo.TodoListFilter(filterParams), 10)
 	if err != nil {
 		context.IndentedJSON(http.StatusInternalServerError, api.NewErrorResponse(err))
 		return
 	}
-	context.IndentedJSON(http.StatusOK, todo.ConvertModelsToResponse(todos, total))
+	context.IndentedJSON(http.StatusOK, ConvertTodoModelsToResponse(todos, total))
 }
 
 // @Summary Create a new todo
@@ -56,11 +56,11 @@ func (controller *TodoApiController) List(context *gin.Context) {
 // @Tags todos
 // @Accept  json
 // @Produce  json
-// @Param todo body todo.TodoCreatePayload true "todo payload"
-// @Success 200 {object} todo.TodoResponse
+// @Param todo body TodoCreatePayload true "todo payload"
+// @Success 200 {object} TodoResponse
 // @Router /todos [post]
 func (controller *TodoApiController) Create(context *gin.Context) {
-	var payload todo.TodoCreatePayload
+	var payload TodoCreatePayload
 	// Call BindJSON to bind the received JSON to
 	if err := context.BindJSON(&payload); err != nil {
 		context.IndentedJSON(http.StatusInternalServerError, api.NewErrorResponse(err))
@@ -72,12 +72,12 @@ func (controller *TodoApiController) Create(context *gin.Context) {
 		context.IndentedJSON(http.StatusForbidden, api.NewErrorResponse(err))
 		return
 	}
-	todoItem, err := controller.todoService.CreateTodo(payload)
+	todoItem, err := controller.todoService.CreateTodo(todo.TodoFullData(payload))
 	if err != nil {
 		context.IndentedJSON(http.StatusInternalServerError, api.NewErrorResponse(err))
 		return
 	}
-	context.IndentedJSON(http.StatusCreated, todo.ConvertModelToResponse(todoItem))
+	context.IndentedJSON(http.StatusCreated, ConvertTodoModelToResponse(todoItem))
 }
 
 // @Summary Get a todo
@@ -86,7 +86,7 @@ func (controller *TodoApiController) Create(context *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param id path int true "Todo ID"
-// @Success 200 {object} todo.TodoResponse
+// @Success 200 {object} TodoResponse
 // @Failure 403 {object} api.ErrorResponse
 // @Failure 500 {object} api.ErrorResponse
 // @Router /todos/{id} [get]
@@ -107,7 +107,7 @@ func (controller *TodoApiController) Read(context *gin.Context) {
 		context.IndentedJSON(http.StatusForbidden, api.NewErrorResponse(err))
 		return
 	}
-	context.IndentedJSON(http.StatusOK, todo.ConvertModelToResponse(todoItem))
+	context.IndentedJSON(http.StatusOK, ConvertTodoModelToResponse(todoItem))
 }
 
 // @Summary Update a todo
@@ -116,11 +116,11 @@ func (controller *TodoApiController) Read(context *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param id path int true "Todo ID"
-// @Param todo body todo.TodoUpdatePayload true "todo payload"
-// @Success 200 {object} todo.TodoResponse
+// @Param todo body TodoUpdatePayload true "todo payload"
+// @Success 200 {object} TodoResponse
 // @Router /todos/{id} [patch]
 func (controller *TodoApiController) Update(context *gin.Context) {
-	var payload todo.TodoUpdatePayload
+	var payload TodoUpdatePayload
 	id, err := strconv.Atoi(context.Param("id"))
 	if err != nil {
 		context.IndentedJSON(http.StatusInternalServerError, api.NewErrorResponse(err))
@@ -132,12 +132,12 @@ func (controller *TodoApiController) Update(context *gin.Context) {
 		return
 	}
 
-	updatedTodo, err := controller.todoService.UpdateTodo(uint(id), payload)
+	updatedTodo, err := controller.todoService.UpdateTodo(uint(id), todo.TodoUpdatableData(payload))
 	if err != nil {
 		context.IndentedJSON(http.StatusInternalServerError, api.NewErrorResponse(err))
 		return
 	}
-	context.IndentedJSON(http.StatusOK, todo.ConvertModelToResponse(updatedTodo))
+	context.IndentedJSON(http.StatusOK, ConvertTodoModelToResponse(updatedTodo))
 }
 
 // @Summary Delete a todo

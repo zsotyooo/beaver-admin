@@ -33,3 +33,19 @@ func (t *Todo) ValidateAccess(authUser user.User) error {
 
 	return errors.New("You are not authorized to view this users todos")
 }
+
+type TodoListFilter struct {
+	UserID *uint
+	Done   *bool
+}
+
+type TodoFullData struct {
+	UserID uint
+	Title  string
+	Done   bool
+}
+
+type TodoUpdatableData struct {
+	Title *string
+	Done  *bool
+}

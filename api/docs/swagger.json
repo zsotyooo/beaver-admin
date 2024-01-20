@@ -33,7 +33,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/auth.LoginPayload"
+                            "$ref": "#/definitions/controllers.LoginPayload"
                         }
                     }
                 ],
@@ -41,7 +41,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/auth.LoginResponse"
+                            "$ref": "#/definitions/controllers.LoginResponse"
                         }
                     },
                     "400": {
@@ -93,7 +93,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.UserResponse"
+                            "$ref": "#/definitions/controllers.UserResponse"
                         }
                     },
                     "204": {
@@ -136,7 +136,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/todo.TodosResponse"
+                            "$ref": "#/definitions/controllers.TodosResponse"
                         }
                     },
                     "400": {
@@ -178,7 +178,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/todo.TodoCreatePayload"
+                            "$ref": "#/definitions/controllers.TodoCreatePayload"
                         }
                     }
                 ],
@@ -186,7 +186,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/todo.TodoResponse"
+                            "$ref": "#/definitions/controllers.TodoResponse"
                         }
                     }
                 }
@@ -218,7 +218,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/todo.TodoResponse"
+                            "$ref": "#/definitions/controllers.TodoResponse"
                         }
                     },
                     "403": {
@@ -288,7 +288,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/todo.TodoUpdatePayload"
+                            "$ref": "#/definitions/controllers.TodoUpdatePayload"
                         }
                     }
                 ],
@@ -296,7 +296,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/todo.TodoResponse"
+                            "$ref": "#/definitions/controllers.TodoResponse"
                         }
                     }
                 }
@@ -319,7 +319,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.UsersResponse"
+                            "$ref": "#/definitions/controllers.UsersResponse"
                         }
                     },
                     "400": {
@@ -369,7 +369,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.UserResponse"
+                            "$ref": "#/definitions/controllers.UserResponse"
                         }
                     },
                     "403": {
@@ -407,7 +407,7 @@
                 }
             }
         },
-        "auth.LoginPayload": {
+        "controllers.LoginPayload": {
             "type": "object",
             "required": [
                 "token"
@@ -419,7 +419,7 @@
                 }
             }
         },
-        "auth.LoginResponse": {
+        "controllers.LoginResponse": {
             "type": "object",
             "properties": {
                 "token": {
@@ -427,11 +427,11 @@
                     "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                 },
                 "user": {
-                    "$ref": "#/definitions/user.UserResponse"
+                    "$ref": "#/definitions/controllers.UserResponse"
                 }
             }
         },
-        "todo.TodoCreatePayload": {
+        "controllers.TodoCreatePayload": {
             "type": "object",
             "required": [
                 "title",
@@ -452,7 +452,7 @@
                 }
             }
         },
-        "todo.TodoResponse": {
+        "controllers.TodoResponse": {
             "type": "object",
             "properties": {
                 "createdAt": {
@@ -472,11 +472,11 @@
                     "example": "Todo title"
                 },
                 "user": {
-                    "$ref": "#/definitions/user.UserResponse"
+                    "$ref": "#/definitions/controllers.UserResponse"
                 }
             }
         },
-        "todo.TodoUpdatePayload": {
+        "controllers.TodoUpdatePayload": {
             "type": "object",
             "properties": {
                 "done": {
@@ -489,13 +489,13 @@
                 }
             }
         },
-        "todo.TodosResponse": {
+        "controllers.TodosResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/todo.TodoResponse"
+                        "$ref": "#/definitions/controllers.TodoResponse"
                     }
                 },
                 "total": {
@@ -504,7 +504,7 @@
                 }
             }
         },
-        "user.UserResponse": {
+        "controllers.UserResponse": {
             "type": "object",
             "properties": {
                 "createdAt": {
@@ -534,13 +534,13 @@
                 }
             }
         },
-        "user.UsersResponse": {
+        "controllers.UsersResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/user.UserResponse"
+                        "$ref": "#/definitions/controllers.UserResponse"
                     }
                 },
                 "total": {

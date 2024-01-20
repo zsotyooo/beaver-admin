@@ -39,7 +39,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/auth.LoginPayload"
+                            "$ref": "#/definitions/controllers.LoginPayload"
                         }
                     }
                 ],
@@ -47,7 +47,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/auth.LoginResponse"
+                            "$ref": "#/definitions/controllers.LoginResponse"
                         }
                     },
                     "400": {
@@ -99,7 +99,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.UserResponse"
+                            "$ref": "#/definitions/controllers.UserResponse"
                         }
                     },
                     "204": {
@@ -142,7 +142,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/todo.TodosResponse"
+                            "$ref": "#/definitions/controllers.TodosResponse"
                         }
                     },
                     "400": {
@@ -184,7 +184,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/todo.TodoCreatePayload"
+                            "$ref": "#/definitions/controllers.TodoCreatePayload"
                         }
                     }
                 ],
@@ -192,7 +192,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/todo.TodoResponse"
+                            "$ref": "#/definitions/controllers.TodoResponse"
                         }
                     }
                 }
@@ -224,7 +224,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/todo.TodoResponse"
+                            "$ref": "#/definitions/controllers.TodoResponse"
                         }
                     },
                     "403": {
@@ -294,7 +294,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/todo.TodoUpdatePayload"
+                            "$ref": "#/definitions/controllers.TodoUpdatePayload"
                         }
                     }
                 ],
@@ -302,7 +302,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/todo.TodoResponse"
+                            "$ref": "#/definitions/controllers.TodoResponse"
                         }
                     }
                 }
@@ -325,7 +325,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.UsersResponse"
+                            "$ref": "#/definitions/controllers.UsersResponse"
                         }
                     },
                     "400": {
@@ -375,7 +375,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.UserResponse"
+                            "$ref": "#/definitions/controllers.UserResponse"
                         }
                     },
                     "403": {
@@ -413,7 +413,7 @@ const docTemplate = `{
                 }
             }
         },
-        "auth.LoginPayload": {
+        "controllers.LoginPayload": {
             "type": "object",
             "required": [
                 "token"
@@ -425,7 +425,7 @@ const docTemplate = `{
                 }
             }
         },
-        "auth.LoginResponse": {
+        "controllers.LoginResponse": {
             "type": "object",
             "properties": {
                 "token": {
@@ -433,11 +433,11 @@ const docTemplate = `{
                     "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                 },
                 "user": {
-                    "$ref": "#/definitions/user.UserResponse"
+                    "$ref": "#/definitions/controllers.UserResponse"
                 }
             }
         },
-        "todo.TodoCreatePayload": {
+        "controllers.TodoCreatePayload": {
             "type": "object",
             "required": [
                 "title",
@@ -458,7 +458,7 @@ const docTemplate = `{
                 }
             }
         },
-        "todo.TodoResponse": {
+        "controllers.TodoResponse": {
             "type": "object",
             "properties": {
                 "createdAt": {
@@ -478,11 +478,11 @@ const docTemplate = `{
                     "example": "Todo title"
                 },
                 "user": {
-                    "$ref": "#/definitions/user.UserResponse"
+                    "$ref": "#/definitions/controllers.UserResponse"
                 }
             }
         },
-        "todo.TodoUpdatePayload": {
+        "controllers.TodoUpdatePayload": {
             "type": "object",
             "properties": {
                 "done": {
@@ -495,13 +495,13 @@ const docTemplate = `{
                 }
             }
         },
-        "todo.TodosResponse": {
+        "controllers.TodosResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/todo.TodoResponse"
+                        "$ref": "#/definitions/controllers.TodoResponse"
                     }
                 },
                 "total": {
@@ -510,7 +510,7 @@ const docTemplate = `{
                 }
             }
         },
-        "user.UserResponse": {
+        "controllers.UserResponse": {
             "type": "object",
             "properties": {
                 "createdAt": {
@@ -540,13 +540,13 @@ const docTemplate = `{
                 }
             }
         },
-        "user.UsersResponse": {
+        "controllers.UsersResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/user.UserResponse"
+                        "$ref": "#/definitions/controllers.UserResponse"
                     }
                 },
                 "total": {
@@ -568,8 +568,6 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "Beaver Admin API",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
-	// LeftDelim:        "{{",
-	// RightDelim:       "}}",
 }
 
 func init() {

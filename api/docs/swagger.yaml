@@ -12,7 +12,7 @@ definitions:
         example: Success
         type: string
     type: object
-  auth.LoginPayload:
+  controllers.LoginPayload:
     properties:
       token:
         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -20,15 +20,15 @@ definitions:
     required:
     - token
     type: object
-  auth.LoginResponse:
+  controllers.LoginResponse:
     properties:
       token:
         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         type: string
       user:
-        $ref: '#/definitions/user.UserResponse'
+        $ref: '#/definitions/controllers.UserResponse'
     type: object
-  todo.TodoCreatePayload:
+  controllers.TodoCreatePayload:
     properties:
       done:
         example: false
@@ -43,7 +43,7 @@ definitions:
     - title
     - user_id
     type: object
-  todo.TodoResponse:
+  controllers.TodoResponse:
     properties:
       createdAt:
         example: "2024-01-09T11:59:57Z"
@@ -58,9 +58,9 @@ definitions:
         example: Todo title
         type: string
       user:
-        $ref: '#/definitions/user.UserResponse'
+        $ref: '#/definitions/controllers.UserResponse'
     type: object
-  todo.TodoUpdatePayload:
+  controllers.TodoUpdatePayload:
     properties:
       done:
         example: false
@@ -69,17 +69,17 @@ definitions:
         example: New title
         type: string
     type: object
-  todo.TodosResponse:
+  controllers.TodosResponse:
     properties:
       data:
         items:
-          $ref: '#/definitions/todo.TodoResponse'
+          $ref: '#/definitions/controllers.TodoResponse'
         type: array
       total:
         example: 100
         type: integer
     type: object
-  user.UserResponse:
+  controllers.UserResponse:
     properties:
       createdAt:
         example: "2024-01-09T11:59:57Z"
@@ -101,11 +101,11 @@ definitions:
         example: user
         type: string
     type: object
-  user.UsersResponse:
+  controllers.UsersResponse:
     properties:
       data:
         items:
-          $ref: '#/definitions/user.UserResponse'
+          $ref: '#/definitions/controllers.UserResponse'
         type: array
       total:
         example: 100
@@ -132,14 +132,14 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/auth.LoginPayload'
+          $ref: '#/definitions/controllers.LoginPayload'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/auth.LoginResponse'
+            $ref: '#/definitions/controllers.LoginResponse'
         "400":
           description: Bad Request
           schema:
@@ -173,7 +173,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user.UserResponse'
+            $ref: '#/definitions/controllers.UserResponse'
         "204":
           description: No Content
           schema:
@@ -201,7 +201,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/todo.TodosResponse'
+            $ref: '#/definitions/controllers.TodosResponse'
         "400":
           description: Invalid request
           schema:
@@ -227,14 +227,14 @@ paths:
         name: todo
         required: true
         schema:
-          $ref: '#/definitions/todo.TodoCreatePayload'
+          $ref: '#/definitions/controllers.TodoCreatePayload'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/todo.TodoResponse'
+            $ref: '#/definitions/controllers.TodoResponse'
       summary: Create a new todo
       tags:
       - todos
@@ -273,7 +273,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/todo.TodoResponse'
+            $ref: '#/definitions/controllers.TodoResponse'
         "403":
           description: Forbidden
           schema:
@@ -300,14 +300,14 @@ paths:
         name: todo
         required: true
         schema:
-          $ref: '#/definitions/todo.TodoUpdatePayload'
+          $ref: '#/definitions/controllers.TodoUpdatePayload'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/todo.TodoResponse'
+            $ref: '#/definitions/controllers.TodoResponse'
       summary: Update a todo
       tags:
       - todos
@@ -322,7 +322,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user.UsersResponse'
+            $ref: '#/definitions/controllers.UsersResponse'
         "400":
           description: Invalid request
           schema:
@@ -355,7 +355,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user.UserResponse'
+            $ref: '#/definitions/controllers.UserResponse'
         "403":
           description: Forbidden
           schema:

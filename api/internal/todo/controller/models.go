@@ -1,18 +1,19 @@
-package todo
+package controllers
 
 import (
 	"api/internal/user"
+	userControllers "api/internal/user/controller"
 	"errors"
 )
 
 // TodoListFilterQuery is used to filter the todo list based on certain criteria.
-// swagger:model TodoListFilter
-type TodoListFilter struct {
+// swagger:model TodoListFilterParams
+type TodoListFilterParams struct {
 	UserID *uint `form:"user_id" binding:"omitempty" example:"1"`
 	Done   *bool `form:"done" binding:"omitempty" example:"false"`
 }
 
-func (f *TodoListFilter) Validate(authUser user.User) error {
+func (f *TodoListFilterParams) Validate(authUser user.User) error {
 	if f.UserID == nil {
 		return nil
 	}
@@ -62,11 +63,11 @@ type TodoUpdatePayload struct {
 // TodoResponse represents a todo in the response
 // @name TodoResponse
 type TodoResponse struct {
-	ID        uint              `json:"id" example:"1"`
-	Title     string            `json:"title" example:"Todo title"`
-	Done      bool              `json:"done" example:"true"`
-	CreatedAt string            `json:"createdAt" example:"2024-01-09T11:59:57Z"`
-	User      user.UserResponse `json:"user"`
+	ID        uint                         `json:"id" example:"1"`
+	Title     string                       `json:"title" example:"Todo title"`
+	Done      bool                         `json:"done" example:"true"`
+	CreatedAt string                       `json:"createdAt" example:"2024-01-09T11:59:57Z"`
+	User      userControllers.UserResponse `json:"user"`
 }
 
 // TodosResponse represents a list of todos in the response
