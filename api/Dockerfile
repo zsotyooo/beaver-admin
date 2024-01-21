@@ -6,6 +6,7 @@ FROM base AS dev
 
 RUN go install github.com/swaggo/swag/cmd/swag@latest
 RUN go install github.com/cosmtrek/air@latest
+RUN go install github.com/onsi/ginkgo/ginkgo@latest
 
 WORKDIR /opt/api
 CMD ["air"]
