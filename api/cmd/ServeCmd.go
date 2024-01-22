@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"api/pkg/bootstrap"
+	"api/internal/bootstrap"
 
 	"github.com/spf13/cobra"
 )
@@ -13,7 +13,7 @@ func init() {
 var serveCmd = &cobra.Command{
 	Use:   "serve",
 	Short: "Serve app on dev server",
-	Long:  "Application will be served on host and port defined in config.yml file",
+	Long:  "Serve app on dev server",
 	Run: func(cmd *cobra.Command, args []string) {
 		serve()
 	},

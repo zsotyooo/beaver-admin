@@ -8,10 +8,9 @@ import (
 )
 
 var (
-	ErrorBadLoginCredentials        = errors.New("Bad login credentials")
-	ErrorAuthTokenNotFoundInRequest = errors.New("No auth token found in request")
-	ErrorNotAuthorized              = errors.New("User not authorized")
-	ErrorForbiddenForUser           = errors.New("Forbidden for this user")
+	ErrorBadLoginCredentials = errors.New("Bad login credentials")
+	ErrorNotAuthorized       = errors.New("User not authorized")
+	ErrorForbiddenForUser    = errors.New("Forbidden for this user")
 )
 
 func Error(err error) error {
@@ -19,7 +18,7 @@ func Error(err error) error {
 }
 
 func GetHttpStatusCode(err error) int {
-	if errors.Is(err, ErrorAuthTokenNotFoundInRequest) || errors.Is(err, ErrorBadLoginCredentials) {
+	if errors.Is(err, ErrorBadLoginCredentials) {
 		return http.StatusBadRequest
 	}
 

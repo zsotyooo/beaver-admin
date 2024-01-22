@@ -6,11 +6,11 @@ import (
 	swaggerRoutes "api/internal/swagger/routes"
 	todoRoutes "api/internal/todo/routes"
 	userRoutes "api/internal/user/routes"
-
-	"github.com/gin-gonic/gin"
+	"api/pkg/routing"
 )
 
-func RegisterRoutes(router *gin.Engine) {
+func RegisterRoutes() {
+	router := routing.GetRouter()
 	pingRoutes.RegisterRoutes(router)
 	authRoutes.RegisterRoutes(router)
 	userRoutes.RegisterRoutes(router)

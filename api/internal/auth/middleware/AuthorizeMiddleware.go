@@ -4,6 +4,7 @@ import (
 	"api/internal/api"
 	"api/internal/auth"
 	"api/internal/user"
+	"api/pkg/jwtauth"
 	"api/pkg/logger"
 
 	"github.com/gin-gonic/gin"
@@ -19,30 +20,34 @@ func NewAuthorizeMiddleware() *AuthorizeMiddleware {
 	}
 }
 
-// It inserts the authUser in the context if there is a valid token in the request (Auth header -> Cookie).
+// It inserts the authUser in the context and session if there is a valid token in the request (Auth header -> Cookie).
 // It does not abort the request if there is no valid token.
 func (middleware *AuthorizeMiddleware) Authorize() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		logger.Debug(map[string]interface{}{}, "Authorize")
-		token, err := auth.GetAuthTokenFromContext(context)
+		token, err := jwtauth.ExtractAuthTokenFromContext(context)
+
+		authUser := auth.NewAuthUser()
 
 		if err != nil {
-			auth.DeleteAuthUserFromContext(context)
+			authUser.Delete(context)
 			context.Next()
 			return
 		}
 
-		_, hasAuthUser := auth.GetAuthUserFromContext(context)
-		if hasAuthUser {
+		authUser.Init(context)
+
+		if authUser.IsAuthenticated() {
 			context.Next()
 			return
 		}
-		authUser, err := middleware.authService.Authorize(token)
+		identifiedUser, err := middleware.authService.Authorize(token)
 
 		if err == nil {
-			auth.SetAuthUserInContext(authUser, context)
+			authUser.SetUser(identifiedUser)
+			authUser.Store(context)
 		} else {
-			auth.DeleteAuthUserFromContext(context)
+			authUser.Delete(context)
 		}
 
 		context.Next()
@@ -53,9 +58,10 @@ func (middleware *AuthorizeMiddleware) Authorize() gin.HandlerFunc {
 // It aborts the request if the Authorization fails.
 func (middleware *AuthorizeMiddleware) EnsureLoggedIn() gin.HandlerFunc {
 	return func(context *gin.Context) {
-		_, hasAuthUser := auth.GetAuthUserFromContext(context)
+		authUser := auth.NewAuthUser()
+		authUser.Init(context)
 
-		if !hasAuthUser {
+		if !authUser.IsAuthenticated() {
 			err := auth.ErrorNotAuthorized
 			context.AbortWithStatusJSON(auth.GetHttpStatusCode(err), api.NewErrorResponse(err))
 		}
@@ -66,32 +72,21 @@ func (middleware *AuthorizeMiddleware) EnsureLoggedIn() gin.HandlerFunc {
 // It aborts the request if the Authorization fails, or the user doesn't have any of the roles.
 func (middleware *AuthorizeMiddleware) MustHaveRole(roles []user.UserRole) gin.HandlerFunc {
 	return func(context *gin.Context) {
-		token, err := auth.GetAuthTokenFromContext(context)
+		authUser := auth.NewAuthUser()
+		authUser.Init(context)
 
-		if err != nil {
-			auth.DeleteAuthUserFromContext(context)
+		if !authUser.IsAuthenticated() {
+			err := auth.ErrorNotAuthorized
 			context.AbortWithStatusJSON(auth.GetHttpStatusCode(err), api.NewErrorResponse(err))
 			return
 		}
 
-		_, err = middleware.authService.Authorize(token)
-		if err != nil {
-			context.AbortWithStatusJSON(auth.GetHttpStatusCode(err), api.NewErrorResponse(err))
-			return
-		}
-		authUser, hasAuthUser := auth.GetAuthUserFromContext(context)
-
-		if !hasAuthUser {
-			context.AbortWithStatusJSON(auth.GetHttpStatusCode(err), api.NewErrorResponse(err))
-			return
-		}
-
-		if authUser.HasRole(roles) {
+		if authUser.User.HasRole(roles) {
 			context.Next()
 			return
 		}
 
-		err = auth.ErrorForbiddenForUser
+		err := auth.ErrorForbiddenForUser
 		context.AbortWithStatusJSON(auth.GetHttpStatusCode(err), api.NewErrorResponse(err))
 	}
 }

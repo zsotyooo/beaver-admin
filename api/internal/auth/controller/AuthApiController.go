@@ -40,7 +40,7 @@ func (controller *AuthApiController) Login(context *gin.Context) {
 		return
 	}
 
-	token, authUser, err := controller.authService.LoginWithGoogleOauthToken(payload.Token)
+	token, identifiedUser, err := controller.authService.LoginWithGoogleOauthToken(payload.Token)
 
 	if err != nil {
 		err = auth.ErrorNotAuthorized
@@ -48,12 +48,15 @@ func (controller *AuthApiController) Login(context *gin.Context) {
 		return
 	}
 
-	auth.SetAuthUserInContext(authUser, context)
+	authUser := auth.NewAuthUser()
+	authUser.SetUser(identifiedUser)
+	authUser.Store(context)
+
 	context.SetCookie("authToken", token, 3600, "/", "", false, true)
 
 	context.IndentedJSON(http.StatusOK, LoginResponse{
 		Token: token,
-		User:  userControllers.ConvertUserModelToResponse(authUser),
+		User:  userControllers.ConvertUserModelToResponse(authUser.User),
 	})
 }
 
@@ -66,9 +69,10 @@ func (controller *AuthApiController) Login(context *gin.Context) {
 // @Failure 204 {object} api.ErrorResponse
 // @Router /auth/me [get]
 func (controller *AuthApiController) Me(context *gin.Context) {
-	authUser, _ := auth.GetAuthUserFromContext(context)
+	authUser := auth.NewAuthUser()
+	authUser.Init(context)
 
-	context.IndentedJSON(http.StatusOK, userControllers.ConvertUserModelToResponse(authUser))
+	context.IndentedJSON(http.StatusOK, userControllers.ConvertUserModelToResponse(authUser.User))
 }
 
 // @Summary Log out
@@ -79,6 +83,8 @@ func (controller *AuthApiController) Me(context *gin.Context) {
 // @Success 200 {object} api.SuccessResponse
 // @Router /auth/logout [post]
 func (controller *AuthApiController) Logout(context *gin.Context) {
+	authUser := auth.NewAuthUser()
+	authUser.Delete(context)
 	context.SetCookie("authToken", "", -1, "/", "", false, true)
 	context.IndentedJSON(http.StatusOK, api.NewSuccessResponse("Logout successful!"))
 }

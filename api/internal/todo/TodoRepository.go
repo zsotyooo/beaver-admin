@@ -1,7 +1,7 @@
 package todo
 
 import (
-	"api/pkg/database"
+	database "api/pkg/database/postgresql"
 	"sync"
 
 	"gorm.io/gorm"
@@ -19,7 +19,7 @@ var (
 func NewTodoRepository() *TodoRepository {
 	once.Do(func() {
 		instance = &TodoRepository{
-			db: database.Connection(),
+			db: database.DBConnection(),
 		}
 	})
 	return instance

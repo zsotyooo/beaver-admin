@@ -9,7 +9,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func Connect() {
+var DB *gorm.DB
+
+func PostgresqlConnect() {
 	db, err := gorm.Open(postgres.New(postgres.Config{
 		DSN: fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable",
 			os.Getenv("DATABASE_USERNAME"),
@@ -26,4 +28,8 @@ func Connect() {
 	}
 
 	DB = db
+}
+
+func DBConnection() *gorm.DB {
+	return DB
 }

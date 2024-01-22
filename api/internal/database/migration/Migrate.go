@@ -3,13 +3,13 @@ package migration
 import (
 	"api/internal/todo"
 	"api/internal/user"
-	"api/pkg/database"
+	database "api/pkg/database/postgresql"
 	"fmt"
 	"log"
 )
 
 func Migrate() {
-	db := database.Connection()
+	db := database.DBConnection()
 
 	err := db.AutoMigrate(&user.User{}, &todo.Todo{})
 

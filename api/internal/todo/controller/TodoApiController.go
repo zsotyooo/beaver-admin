@@ -35,8 +35,9 @@ func (controller *TodoApiController) List(context *gin.Context) {
 	var filterParams = TodoListFilterParams{}
 	context.ShouldBindQuery(&filterParams)
 
-	authUser, _ := auth.GetAuthUserFromContext(context)
-	err := filterParams.Validate(authUser)
+	authUser := auth.NewAuthUser()
+	authUser.Init(context)
+	err := filterParams.Validate(authUser.User)
 
 	if err != nil {
 		context.IndentedJSON(http.StatusForbidden, api.NewErrorResponse(err))
@@ -66,8 +67,10 @@ func (controller *TodoApiController) Create(context *gin.Context) {
 		context.IndentedJSON(http.StatusInternalServerError, api.NewErrorResponse(err))
 		return
 	}
-	authUser, _ := auth.GetAuthUserFromContext(context)
-	err := payload.Validate(authUser)
+
+	authUser := auth.NewAuthUser()
+	authUser.Init(context)
+	err := payload.Validate(authUser.User)
 	if err != nil {
 		context.IndentedJSON(http.StatusForbidden, api.NewErrorResponse(err))
 		return
@@ -101,8 +104,9 @@ func (controller *TodoApiController) Read(context *gin.Context) {
 		context.IndentedJSON(http.StatusInternalServerError, api.NewErrorResponse(err))
 		return
 	}
-	authUser, _ := auth.GetAuthUserFromContext(context)
-	err = todoItem.ValidateAccess(authUser)
+	authUser := auth.NewAuthUser()
+	authUser.Init(context)
+	err = todoItem.ValidateAccess(authUser.User)
 	if err != nil {
 		context.IndentedJSON(http.StatusForbidden, api.NewErrorResponse(err))
 		return

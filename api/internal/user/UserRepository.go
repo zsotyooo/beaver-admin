@@ -1,7 +1,7 @@
 package user
 
 import (
-	"api/pkg/database"
+	database "api/pkg/database/postgresql"
 	"sync"
 
 	"gorm.io/gorm"
@@ -19,7 +19,7 @@ var (
 func NewUserRepository() *UserRepository {
 	once.Do(func() {
 		instance = &UserRepository{
-			db: database.Connection(),
+			db: database.DBConnection(),
 		}
 	})
 	return instance

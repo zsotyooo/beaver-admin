@@ -3,7 +3,7 @@ package bootstrap
 import (
 	"api/internal/database/migration"
 	"api/pkg/config"
-	"api/pkg/database"
+	database "api/pkg/database/postgresql"
 	"api/pkg/logger"
 )
 
@@ -12,7 +12,7 @@ func Migrate() {
 
 	config.Set()
 
-	database.Connect()
+	database.PostgresqlConnect()
 
 	migration.Migrate()
 }
