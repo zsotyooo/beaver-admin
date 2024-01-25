@@ -1,3 +1,4 @@
 .env
-tmp
+tmpx
 /data
+/api/tmp
